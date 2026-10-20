@@ -3,49 +3,246 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My First Web App</title>
+  <meta name="description" content="Pheku's personal page about technology, food and everyday interests.">
+  <title>Pheku's Corner</title>
   <style>
+    /* A small colour palette to keep the page consistent */
+    :root {
+      --navy: #193b5a;
+      --teal: #087d80;
+      --orange: #c66435;
+      --text: #24364a;
+      --muted: #52677b;
+      --page: #f5f8fc;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #243247;
       margin: 0;
-      padding: 40px 20px;
-      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: linear-gradient(#eaf3f9 0, var(--page) 290px);
     }
-    main {
-      max-width: 560px;
-      margin: 60px auto;
-      padding: 36px;
-      background: white;
-      border: 1px solid #e1e6ee;
-      border-radius: 14px;
-      box-shadow: 0 6px 22px rgba(0,0,0,0.05);
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid #dce7ee;
     }
-    h1 { font-size: 28px; }
-    p { line-height: 1.6; }
-    button {
-      padding: 12px 22px;
-      border: none;
-      border-radius: 8px;
-      background: #2356a5;
+
+    nav {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 17px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+    }
+
+    .site-name {
+      color: var(--navy);
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    .site-name::after {
+      content: ".";
+      color: var(--orange);
+      font-size: 25px;
+    }
+
+    .nav-links { display: flex; flex-wrap: wrap; gap: 10px 20px; }
+
+    .nav-links a {
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-links a:hover { color: var(--teal); border-bottom-color: var(--teal); }
+
+    main { max-width: 860px; margin: 0 auto; padding: 30px 22px 42px; }
+
+    .intro {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 43px 36px;
+      margin-bottom: 22px;
       color: white;
-      font-size: 16px;
-      cursor: pointer;
+      background: linear-gradient(125deg, #193b5a, #117b83);
+      box-shadow: 0 10px 24px rgba(25, 59, 90, 0.12);
     }
-    button:hover { background: #19417f; }
+
+    /* The circles add a little colour without needing images */
+    .intro::after {
+      content: "";
+      position: absolute;
+      right: -50px;
+      top: -75px;
+      width: 230px;
+      height: 230px;
+      border: 34px solid rgba(255, 255, 255, 0.09);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .intro h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 8px;
+      font-size: clamp(30px, 5vw, 42px);
+      line-height: 1.2;
+    }
+
+    .intro p {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0;
+      font-size: 17px;
+      color: #edf8fb;
+    }
+
+    .wave { color: #ffd394; }
+
+    section {
+      margin-bottom: 18px;
+      padding: 24px 28px;
+      background: var(--white);
+      border: 1px solid #e2eaf0;
+      border-left: 5px solid var(--teal);
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(24, 58, 89, 0.05);
+    }
+
+    #interests { border-left-color: var(--orange); }
+    #break { border-left-color: #5274af; }
+
+    h2 { margin: 0 0 10px; color: var(--navy); font-size: 22px; }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+
+    ul { list-style: none; margin: 12px 0 0; padding: 0; }
+
+    li {
+      margin: 9px 0;
+      padding: 9px 14px;
+      background: #f0f7fa;
+      border-radius: 8px;
+    }
+
+    li::before { content: "•"; margin-right: 10px; color: var(--teal); font-weight: bold; }
+
+    button {
+      margin-top: 4px;
+      padding: 12px 19px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--teal);
+      color: white;
+      font: inherit;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    button:hover { background: #075e61; transform: translateY(-1px); }
+
+    button:focus-visible, a:focus-visible {
+      outline: 3px solid #f0a15b;
+      outline-offset: 4px;
+    }
+
+    #break-idea { min-height: 24px; margin-top: 14px; font-weight: bold; }
+
+    #break-idea:not(:empty) {
+      padding: 12px 14px;
+      background: #eaf7f3;
+      color: #164c4c;
+      border-radius: 8px;
+    }
+
+    footer { padding: 0 20px 30px; color: var(--muted); font-size: 14px; text-align: center; }
+
+    @media (max-width: 560px) {
+      nav { justify-content: center; text-align: center; }
+      .nav-links { justify-content: center; }
+      main { padding: 20px 14px 28px; }
+      .intro { padding: 34px 24px; }
+      .intro p { font-size: 16px; }
+      section { padding: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      button { transition: none; }
+      button:hover { transform: none; }
+    }
   </style>
 </head>
 <body>
+  <header>
+    <nav aria-label="Main navigation">
+      <span class="site-name">Pheku's Corner</span>
+      <div class="nav-links">
+        <a href="#about">About me</a>
+        <a href="#interests">My interests</a>
+        <a href="#break">Take a break</a>
+      </div>
+    </nav>
+  </header>
+
   <main>
-    <h1>Welcome to My First Web App!</h1>
-    <p>I created this web page using Visual Studio Code as part of my Web Technologies module.</p>
-    <button type="button" onclick="showMessage()">Click Me</button>
+    <div class="intro">
+      <h1>Hey, I'm Pheku <span class="wave">:)</span></h1>
+      <p>Welcome to my little corner of the internet. I enjoy technology, good food and learning new things.</p>
+    </div>
+
+    <section id="about">
+      <h2>A bit about me</h2>
+      <p>I like exploring new ideas and figuring out how things work. Recently, I've been trying my hand at making websites, so I thought I'd start with a simple page of my own.</p>
+    </section>
+
+    <section id="interests">
+      <h2>Things I enjoy</h2>
+      <ul>
+        <li>Technology and discovering useful apps</li>
+        <li>Cooking and good food</li>
+        <li>Learning practical skills and trying something new</li>
+      </ul>
+    </section>
+
+    <section id="break">
+      <h2>Need a quick break?</h2>
+      <p>If you've been staring at your screen for a while, click below for a little break idea.</p>
+      <button id="idea-button" type="button">Give me an idea</button>
+      <p id="break-idea" role="status" aria-live="polite"></p>
+    </section>
   </main>
+
+  <footer>Thanks for stopping by!</footer>
+
   <script>
-    function showMessage() {
-      alert("Hello! My first web app is working!");
-    }
+    const ideas = [
+      'Make yourself a cup of tea or coffee.',
+      'Go for a short walk.',
+      'Put on one of your favourite songs.',
+      'Stretch your legs and take a few deep breaths.'
+    ];
+
+    const button = document.getElementById('idea-button');
+    const message = document.getElementById('break-idea');
+
+    button.addEventListener('click', function () {
+      const randomNumber = Math.floor(Math.random() * ideas.length);
+      message.textContent = ideas[randomNumber];
+    });
   </script>
 </body>
 </html>
