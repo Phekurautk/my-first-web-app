@@ -142,6 +142,16 @@
       box-shadow: 0 4px 15px rgba(24, 58, 89, 0.05);
     }
 
+    /* Two side-by-side cards on larger screens; stacked on phones. */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .info-grid section { min-width: 0; margin-bottom: 0; }
+
     #interests { border-left-color: var(--orange); }
     #break { border-left-color: #5274af; }
 
@@ -194,13 +204,50 @@
 
     footer { padding: 0 20px 30px; color: var(--muted); font-size: 14px; text-align: center; }
 
-    @media (max-width: 560px) {
-      nav { justify-content: center; text-align: center; }
-      .nav-links { justify-content: center; }
+    /* Adjust the layout when the screen is narrower, including phones. */
+    @media (max-width: 700px) {
+      nav {
+        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+        padding: 14px 16px 16px;
+        text-align: center;
+      }
+
+      .nav-links {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+        max-width: 460px;
+      }
+
+      .nav-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 9px 6px;
+        line-height: 1.25;
+        font-size: 14px;
+        background: #f2f8fb;
+        border: 1px solid #dce7ee;
+        border-radius: 8px;
+      }
+
+      .nav-links a:hover { border-color: var(--teal); }
+      .info-grid { grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
       main { padding: 20px 14px 28px; }
-      .intro { padding: 34px 24px; }
+      .intro { padding: 32px 24px; }
       .intro p { font-size: 16px; }
       section { padding: 20px; }
+      #idea-button { display: block; width: 100%; min-height: 48px; }
+    }
+
+    @media (max-width: 360px) {
+      nav { padding-left: 12px; padding-right: 12px; }
+      .intro { padding: 28px 20px; }
+      section { padding: 18px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -228,19 +275,21 @@
       <p>Welcome to my little corner of the internet. I enjoy technology, good food and learning new things.</p>
     </div>
 
-    <section id="about" aria-labelledby="about-title">
-      <h2 id="about-title">A bit about me</h2>
-      <p>I like exploring new ideas and figuring out how things work. Recently, I've been trying my hand at making websites, so I thought I'd start with a simple page of my own.</p>
-    </section>
+    <div class="info-grid">
+      <section id="about" aria-labelledby="about-title">
+        <h2 id="about-title">A bit about me</h2>
+        <p>I like exploring new ideas and figuring out how things work. Recently, I've been trying my hand at making websites, so I thought I'd start with a simple page of my own.</p>
+      </section>
 
-    <section id="interests" aria-labelledby="interests-title">
-      <h2 id="interests-title">Things I enjoy</h2>
-      <ul>
-        <li>Technology and discovering useful apps</li>
-        <li>Cooking and good food</li>
-        <li>Learning practical skills and trying something new</li>
-      </ul>
-    </section>
+      <section id="interests" aria-labelledby="interests-title">
+        <h2 id="interests-title">Things I enjoy</h2>
+        <ul>
+          <li>Technology and discovering useful apps</li>
+          <li>Cooking and good food</li>
+          <li>Learning practical skills and trying something new</li>
+        </ul>
+      </section>
+    </div>
 
     <section id="break" aria-labelledby="break-title">
       <h2 id="break-title">Need a quick break?</h2>
