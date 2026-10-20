@@ -229,6 +229,29 @@
       border-radius: 8px;
     }
 
+
+    /* The meal section uses the same colours as the rest of the page. */
+    #food { border-left-color: var(--orange); }
+    #food-button:disabled { cursor: wait; opacity: 0.7; transform: none; }
+    #meal-status { margin-top: 12px; color: var(--muted); }
+    .meal-result {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+      margin-top: 16px;
+      padding: 16px;
+      background: #f0f7fa;
+      border-radius: 10px;
+    }
+    .meal-result[hidden], #meal-photo[hidden], #meal-link[hidden] { display: none; }
+    #meal-photo { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 9px; }
+    .meal-result h3 { margin: 0 0 4px; font-size: 20px; color: var(--navy); }
+    .meal-result p { margin: 0 0 10px; }
+    #meal-link { color: var(--teal); font-weight: bold; }
+    .food-credit { margin-top: 14px; font-size: 13px; color: var(--muted); }
+    .food-credit a { color: var(--teal); }
+
     footer { padding: 0 20px 30px; color: var(--muted); font-size: 14px; text-align: center; }
 
     /* Adjust the layout when the screen is narrower, including phones. */
@@ -243,7 +266,7 @@
 
       .nav-links {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
         width: 100%;
         max-width: 460px;
@@ -271,6 +294,9 @@
       .break-controls { flex-direction: column; align-items: stretch; }
       .break-choice select { width: 100%; }
       #idea-button { width: 100%; }
+      .meal-result { grid-template-columns: 1fr; }
+      #meal-photo { max-width: 260px; }
+      #food-button { width: 100%; }
     }
 
     @media (max-width: 360px) {
@@ -293,6 +319,7 @@
       <div class="nav-links">
         <a href="#about">About me</a>
         <a href="#interests">My interests</a>
+        <a href="#food">Food idea</a>
         <a href="#break">Take a break</a>
       </div>
     </nav>
@@ -319,6 +346,23 @@
         </ul>
       </section>
     </div>
+
+
+    <section id="food" aria-labelledby="food-title">
+      <h2 id="food-title">Not sure what to cook?</h2>
+      <p>I enjoy trying different food, so here's a little way to discover something new.</p>
+      <button id="food-button" type="button">Surprise me with a meal</button>
+      <p id="meal-status" role="status" aria-live="polite"></p>
+      <div id="meal-result" class="meal-result" hidden>
+        <img id="meal-photo" alt="" loading="lazy" hidden>
+        <div>
+          <h3 id="meal-name"></h3>
+          <p id="meal-category"></p>
+          <a id="meal-link" target="_blank" rel="noopener noreferrer" hidden>See the recipe</a>
+        </div>
+      </div>
+      <p class="food-credit">Meal suggestions from <a href="https://www.themealdb.com/" target="_blank" rel="noopener noreferrer">TheMealDB</a>.</p>
+    </section>
 
     <section id="break" aria-labelledby="break-title">
       <h2 id="break-title">Need a quick break?</h2>
@@ -384,6 +428,56 @@
     // Clear an older suggestion if the user changes the time available.
     timeSelect.addEventListener('change', function () {
       message.textContent = '';
+    });
+
+    // Ask TheMealDB for a random meal when someone clicks the button.
+    const foodButton = document.getElementById('food-button');
+    const mealStatus = document.getElementById('meal-status');
+    const mealResult = document.getElementById('meal-result');
+    const mealPhoto = document.getElementById('meal-photo');
+    const mealName = document.getElementById('meal-name');
+    const mealCategory = document.getElementById('meal-category');
+    const mealLink = document.getElementById('meal-link');
+
+    foodButton.addEventListener('click', async function () {
+      foodButton.disabled = true;
+      mealStatus.textContent = 'Looking for something tasty...';
+      mealResult.hidden = true;
+
+      try {
+        const response = await fetch('https://www.themealdb.com/api/json/v1/1/random.php', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Request failed');
+
+        const data = await response.json();
+        const meal = data.meals && data.meals[0];
+        if (!meal || !meal.strMeal) throw new Error('No meal found');
+
+        mealName.textContent = meal.strMeal;
+        mealCategory.textContent = [meal.strArea, meal.strCategory].filter(Boolean).join(' · ');
+
+        if (meal.strMealThumb && meal.strMealThumb.startsWith('https://')) {
+          mealPhoto.src = meal.strMealThumb;
+          mealPhoto.alt = 'Photo of ' + meal.strMeal;
+          mealPhoto.hidden = false;
+        } else {
+          mealPhoto.hidden = true;
+        }
+
+        const recipeUrl = meal.strSource || meal.strYoutube || '';
+        if (recipeUrl.startsWith('https://')) {
+          mealLink.href = recipeUrl;
+          mealLink.hidden = false;
+        } else {
+          mealLink.hidden = true;
+        }
+
+        mealResult.hidden = false;
+        mealStatus.textContent = 'Here is a meal to try:';
+      } catch (error) {
+        mealStatus.textContent = 'Sorry, I could not load a meal. Please try again.';
+      } finally {
+        foodButton.disabled = false;
+      }
     });
   </script>
 </body>
