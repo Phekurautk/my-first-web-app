@@ -193,7 +193,34 @@
       outline-offset: 4px;
     }
 
+    /* Keep the break controls simple and easy to use. */
+    .break-controls {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .break-choice { display: flex; flex-direction: column; gap: 6px; }
+    .break-choice label { font-weight: bold; color: var(--navy); }
+    .break-choice select {
+      min-width: 180px;
+      min-height: 48px;
+      padding: 10px 14px;
+      border: 1px solid #9eb6c5;
+      border-radius: 9px;
+      background: var(--white);
+      color: var(--text);
+      font: inherit;
+    }
+    .break-choice select:focus-visible {
+      outline: 3px solid var(--navy);
+      outline-offset: 3px;
+    }
+    .break-controls button { margin-top: 0; min-height: 48px; }
     #break-idea { min-height: 24px; margin-top: 14px; font-weight: bold; }
+    #idea-count { color: var(--muted); font-size: 14px; margin-top: 6px; }
 
     #break-idea:not(:empty) {
       padding: 12px 14px;
@@ -241,7 +268,9 @@
       .intro { padding: 32px 24px; }
       .intro p { font-size: 16px; }
       section { padding: 20px; }
-      #idea-button { display: block; width: 100%; min-height: 48px; }
+      .break-controls { flex-direction: column; align-items: stretch; }
+      .break-choice select { width: 100%; }
+      #idea-button { width: 100%; }
     }
 
     @media (max-width: 360px) {
@@ -293,28 +322,68 @@
 
     <section id="break" aria-labelledby="break-title">
       <h2 id="break-title">Need a quick break?</h2>
-      <p id="break-description">If you've been staring at your screen for a while, click below for a little break idea.</p>
-      <button id="idea-button" type="button" aria-describedby="break-description">Give me an idea</button>
+      <p id="break-description">Got a few minutes away from your screen? Pick how long you've got.</p>
+      <div class="break-controls">
+        <div class="break-choice">
+          <label for="break-length">How much time do you have?</label>
+          <select id="break-length">
+            <option value="2">2 minutes</option>
+            <option value="5" selected>5 minutes</option>
+            <option value="10">10 minutes</option>
+          </select>
+        </div>
+        <button id="idea-button" type="button">Give me an idea</button>
+      </div>
       <p id="break-idea" role="status" aria-atomic="true"></p>
+      <p id="idea-count">Ideas shown: 0</p>
     </section>
   </main>
 
   <footer>Thanks for stopping by!</footer>
 
   <script>
-    const ideas = [
-      'Make yourself a cup of tea or coffee.',
-      'Go for a short walk.',
-      'Put on one of your favourite songs.',
-      'Stretch your legs and take a few deep breaths.'
-    ];
+    // Different ideas depending on how much time someone has.
+    const breakIdeas = {
+      '2': [
+        'Stand up and stretch your shoulders.',
+        'Get a glass of water.',
+        'Look away from your screen and take a few slow breaths.'
+      ],
+      '5': [
+        'Make yourself a cup of tea or coffee.',
+        'Walk around for five minutes.',
+        'Put on one of your favourite songs.'
+      ],
+      '10': [
+        'Go outside for a quick walk.',
+        'Prepare a small snack and take a screen break.',
+        'Do some gentle stretches and relax for a few minutes.'
+      ]
+    };
 
+    const timeSelect = document.getElementById('break-length');
     const button = document.getElementById('idea-button');
     const message = document.getElementById('break-idea');
+    const counter = document.getElementById('idea-count');
+    let lastIdea = '';
+    let ideasShown = 0;
 
     button.addEventListener('click', function () {
-      const randomNumber = Math.floor(Math.random() * ideas.length);
-      message.textContent = ideas[randomNumber];
+      const ideas = breakIdeas[timeSelect.value];
+      // Don't show the exact same suggestion twice in a row.
+      const choices = ideas.filter(function (idea) {
+        return idea !== lastIdea;
+      });
+      const randomIndex = Math.floor(Math.random() * choices.length);
+      lastIdea = choices[randomIndex];
+      message.textContent = lastIdea;
+      ideasShown += 1;
+      counter.textContent = 'Ideas shown: ' + ideasShown;
+    });
+
+    // Clear an older suggestion if the user changes the time available.
+    timeSelect.addEventListener('change', function () {
+      message.textContent = '';
     });
   </script>
 </body>
